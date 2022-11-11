@@ -39,7 +39,7 @@ class RegisterActivity : AppCompatActivity() {
         }
         binding.btnRegisterRegister.setOnClickListener {
             if(binding.rbMurid.isChecked)role="murid" else role="pengajar"
-            if(binding.etUsernameRegister.text.isNullOrEmpty()&&binding.etNameRegister.text.isNullOrEmpty()&&binding.etPasswordRegister.text.isNullOrEmpty()&&binding.etConPassRegister.text.isNullOrEmpty()){
+            if(binding.etUsernameRegister.text.isNullOrEmpty()||binding.etNameRegister.text.isNullOrEmpty()||binding.etPasswordRegister.text.isNullOrEmpty()||binding.etConPassRegister.text.isNullOrEmpty()){
                 Toast.makeText(this,"Harap isi semua kolom inputan",Toast.LENGTH_SHORT).show()
             }
             else{
@@ -74,7 +74,9 @@ class RegisterActivity : AppCompatActivity() {
 
     fun doInsert(){
         coroutine.launch {
-            listUser.add(UserEntity(binding.etUsernameRegister.text.toString(),binding.etPasswordRegister.text.toString(),binding.etConPassRegister.text.toString(),role))
+            val user=UserEntity(binding.etUsernameRegister.text.toString(),binding.etPasswordRegister.text.toString(),binding.etConPassRegister.text.toString(),role)
+            dao.insert(user)
+            listUser.add(user)
         }
         Toast.makeText(this,"Berhasil Register",Toast.LENGTH_SHORT).show()
         binding.etUsernameRegister.text.clear()
