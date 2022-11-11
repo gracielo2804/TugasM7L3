@@ -18,7 +18,7 @@ nama column
 data class AmbilKelasEntity(
     @PrimaryKey
     val id:String,
-    val idKelas:String,
+    val idKelas:Int,
     val usernameMurid: String,
     val statusSelesai: Boolean,
     val name:  String,

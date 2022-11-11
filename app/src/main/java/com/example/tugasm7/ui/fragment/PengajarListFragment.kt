@@ -1,20 +1,25 @@
 package com.example.tugasm7.ui.fragment
 
+import android.R
 import android.os.Bundle
+import android.util.Log
+import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import com.example.tugasm7.R
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tugasm7.database.AppDatabase
 import com.example.tugasm7.database.DBDao
 import com.example.tugasm7.database.entity.AmbilKelasEntity
 import com.example.tugasm7.database.entity.KelasEntity
 import com.example.tugasm7.database.entity.UserEntity
+import com.example.tugasm7.databinding.FragmentPengajarListBinding
+import com.example.tugasm7.ui.RecyclerviewAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
-class PengajarListFragment(usernamelogin:String,namalogin:String) : Fragment() {
+
+class PengajarListFragment(val usernamelogin:String,val namalogin:String) : Fragment(),RecyclerviewAdapter.AdapterCallback{
 
     private val coroutine = CoroutineScope(Dispatchers.IO)
     private lateinit var db: AppDatabase
@@ -24,15 +29,88 @@ class PengajarListFragment(usernamelogin:String,namalogin:String) : Fragment() {
     private var listKelas= arrayListOf<KelasEntity>()
     private var listAmbilKelas= arrayListOf<AmbilKelasEntity>()
 
+    private lateinit var adapters:RecyclerviewAdapter
+
+    private lateinit var binding:FragmentPengajarListBinding
+
+    var onToEditListener:(( data: KelasEntity)-> Unit)? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_pengajar_add, container, false)
+        binding=FragmentPengajarListBinding.inflate(inflater,container,false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        db=AppDatabase.build(this.context)
+        dao=db.dbDao
+        adapters=RecyclerviewAdapter(this)
+
+        binding.rvListKelasPengajar.apply {
+            adapter=adapters
+            layoutManager=LinearLayoutManager(this.context)
+        }
+        registerForContextMenu(binding.rvListKelasPengajar)
+
+       refreshAllData()
+
     }
+
+    fun olahData(){
+        var temp=listKelas
+        var tempKirim= arrayListOf<KelasEntity>()
+        for (i in temp){
+            if(i.usernamepengajar==usernamelogin)tempKirim.add(i)
+        }
+        adapters.refreshDataListKelas(tempKirim)
+        adapters.refreshDataListAmbilKelas(listAmbilKelas)
+    }
+
+    override fun onListPengajarLongClicked(tipe:String,kelas: KelasEntity) {
+       if(tipe=="delete"){
+           coroutine.launch {
+               dao.delete(kelas)
+               adapters.refreshTipe(RecyclerviewAdapter.TYPE_LIST_PENGAJAR)
+               refreshAllData()
+
+           }
+       }
+       else if(tipe=="edit"){
+           onToEditListener?.invoke(kelas)
+       }
+    }
+
+    override fun onUserPilihLongClicked(kelas: KelasEntity) {
+
+    }
+
+    override fun onUserListLongClicked(ambilKelasEntity: AmbilKelasEntity) {
+
+    }
+
+    override fun onCreateContextMenu(
+        menu: ContextMenu,
+        v: View,
+        menuInfo: ContextMenu.ContextMenuInfo?
+    ) {
+        super.onCreateContextMenu(menu, v, menuInfo)
+        menu.add(0, v.id, 0, "Delete")
+        menu.add(0, v.id, 0, "Edit")
+    }
+
+
+    fun refreshAllData(){
+
+        coroutine.launch {
+            listKelas= dao.getKelas() as ArrayList<KelasEntity>
+            listAmbilKelas= dao.getAllAmbilKelas() as ArrayList<AmbilKelasEntity>
+            adapters.refreshTipe(RecyclerviewAdapter.TYPE_LIST_PENGAJAR)
+            activity?.runOnUiThread {
+                olahData()
+            }
+        }
+    }
+
 }

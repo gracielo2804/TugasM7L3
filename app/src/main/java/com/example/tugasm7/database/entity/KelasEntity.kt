@@ -16,11 +16,12 @@ nama column
 
 @Entity(tableName = "kelas")
 data class KelasEntity(
-    @PrimaryKey
-    val id:String,
+    @PrimaryKey (autoGenerate = true)
+    val id:Int,
     val usernamepengajar: String,
-    val harga: Int,
-    val name:  String,
-    val keterangan: String
+    val namapengajar: String,
+    var harga: Int,
+    var name:  String,
+    var keterangan: String
 ){
 }

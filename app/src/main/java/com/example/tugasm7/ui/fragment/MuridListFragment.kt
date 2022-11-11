@@ -11,6 +11,7 @@ import com.example.tugasm7.database.DBDao
 import com.example.tugasm7.database.entity.AmbilKelasEntity
 import com.example.tugasm7.database.entity.KelasEntity
 import com.example.tugasm7.database.entity.UserEntity
+import com.example.tugasm7.databinding.FragmentMuridListBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 
@@ -24,13 +25,14 @@ class MuridListFragment(usernamelogin:String,namalogin:String) : Fragment() {
     private var listKelas= arrayListOf<KelasEntity>()
     private var listAmbilKelas= arrayListOf<AmbilKelasEntity>()
 
+    private lateinit var binding:FragmentMuridListBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_pengajar_add, container, false)
+        binding=FragmentMuridListBinding.inflate(inflater,container,false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
