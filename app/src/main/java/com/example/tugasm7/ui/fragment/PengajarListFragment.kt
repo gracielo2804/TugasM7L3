@@ -46,7 +46,7 @@ class PengajarListFragment(val usernamelogin:String,val namalogin:String) : Frag
         super.onViewCreated(view, savedInstanceState)
         db=AppDatabase.build(this.context)
         dao=db.dbDao
-        adapters=RecyclerviewAdapter(this)
+        adapters=RecyclerviewAdapter(this,usernamelogin)
 
         binding.rvListKelasPengajar.apply {
             adapter=adapters
@@ -58,22 +58,24 @@ class PengajarListFragment(val usernamelogin:String,val namalogin:String) : Frag
 
     }
 
-    fun olahData(){
-        var temp=listKelas
-        var tempKirim= arrayListOf<KelasEntity>()
-        for (i in temp){
-            if(i.usernamepengajar==usernamelogin)tempKirim.add(i)
-        }
-        adapters.refreshDataListKelas(tempKirim)
-        adapters.refreshDataListAmbilKelas(listAmbilKelas)
-    }
-
     override fun onListPengajarLongClicked(tipe:String,kelas: KelasEntity) {
        if(tipe=="delete"){
            coroutine.launch {
-               dao.delete(kelas)
-               adapters.refreshTipe(RecyclerviewAdapter.TYPE_LIST_PENGAJAR)
-               refreshAllData()
+               val jumlahmurid=dao.getCountKelas(kelas.id)
+               if(jumlahmurid>0){
+                   activity?.runOnUiThread {
+                       Toast.makeText(this@PengajarListFragment.context, "Gagal Delete ! Ada murid yang terdaftar pada kelas ini", Toast.LENGTH_SHORT).show()
+                   }
+               }
+               else{
+                   dao.delete(kelas)
+                   adapters.refreshTipe(RecyclerviewAdapter.TYPE_LIST_PENGAJAR)
+                   refreshAllData()
+                   activity?.runOnUiThread {
+                       Toast.makeText(this@PengajarListFragment.context, "Berhasil delete kelas", Toast.LENGTH_SHORT).show()
+                   }
+               }
+
 
            }
        }
@@ -83,26 +85,20 @@ class PengajarListFragment(val usernamelogin:String,val namalogin:String) : Frag
     }
 
     override fun onUserPilihLongClicked(kelas: KelasEntity) {
-
+        //nothing
     }
 
-    override fun onUserListLongClicked(ambilKelasEntity: AmbilKelasEntity) {
-
+    override fun onUserListLongClicked(tipe: String, kelas: KelasEntity, ambilKelasEntity: AmbilKelasEntity) {
     }
 
-    override fun onCreateContextMenu(
-        menu: ContextMenu,
-        v: View,
-        menuInfo: ContextMenu.ContextMenuInfo?
-    ) {
+    override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenu.ContextMenuInfo?)
+    {
         super.onCreateContextMenu(menu, v, menuInfo)
         menu.add(0, v.id, 0, "Delete")
         menu.add(0, v.id, 0, "Edit")
     }
 
-
     fun refreshAllData(){
-
         coroutine.launch {
             listKelas= dao.getKelas() as ArrayList<KelasEntity>
             listAmbilKelas= dao.getAllAmbilKelas() as ArrayList<AmbilKelasEntity>
@@ -111,6 +107,17 @@ class PengajarListFragment(val usernamelogin:String,val namalogin:String) : Frag
                 olahData()
             }
         }
+    }
+
+    fun olahData(){
+        var temp=listKelas
+        var tempKirim= arrayListOf<KelasEntity>()
+        for (i in temp){
+            Log.e("comapare username","${i.usernamepengajar} - $usernamelogin}")
+            if(i.usernamepengajar==usernamelogin)tempKirim.add(i)
+        }
+        adapters.refreshDataListKelas(tempKirim)
+        adapters.refreshDataListAmbilKelas(listAmbilKelas)
     }
 
 }

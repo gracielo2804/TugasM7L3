@@ -20,7 +20,7 @@ class .kt. Jadi semua Entity yang hendak digunakan dan disimpan dalam database d
  */
 @Database(entities = [
     UserEntity::class,KelasEntity::class,AmbilKelasEntity::class
-],version=1)
+],version=2)
 abstract class AppDatabase : RoomDatabase(){
     //Deklarasi variabel DAO untuk class UserEntity
     abstract val dbDao: DBDao

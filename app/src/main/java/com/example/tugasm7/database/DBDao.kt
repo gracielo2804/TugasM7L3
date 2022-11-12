@@ -56,7 +56,7 @@ interface DBDao {
     suspend fun getAmbilKelasByID(id:String):AmbilKelasEntity?
 
     @Query("SELECT count(*) FROM ambilkelas where idKelas = :id")
-    suspend fun getCountKelas(id:String):Int
+    suspend fun getCountKelas(id:Int):Int
 
 
 

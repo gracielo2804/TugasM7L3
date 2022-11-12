@@ -74,7 +74,7 @@ class RegisterActivity : AppCompatActivity() {
 
     fun doInsert(){
         coroutine.launch {
-            val user=UserEntity(binding.etUsernameRegister.text.toString(),binding.etPasswordRegister.text.toString(),binding.etConPassRegister.text.toString(),role)
+            val user=UserEntity(binding.etUsernameRegister.text.toString(),binding.etPasswordRegister.text.toString(),binding.etNameRegister.text.toString(),role)
             dao.insert(user)
             listUser.add(user)
         }

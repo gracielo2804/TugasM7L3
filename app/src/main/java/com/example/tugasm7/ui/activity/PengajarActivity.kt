@@ -1,7 +1,12 @@
 package com.example.tugasm7.ui.activity
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.FrameLayout
+import android.widget.Toast
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -84,5 +89,24 @@ class PengajarActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_logout,menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.item_logout ->{
+                var customerLogout = Intent(this, LoginActivity::class.java);
+                customerLogout.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                Toast.makeText(this, "Berhasil Logout", Toast.LENGTH_SHORT).show()
+                finish()
+                startActivity(customerLogout);
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 }

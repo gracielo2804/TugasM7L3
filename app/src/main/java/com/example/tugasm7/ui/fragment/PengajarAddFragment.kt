@@ -49,12 +49,12 @@ class PengajarAddFragment(val usernamelogin:String,val namalogin:String,val tipe
             binding.etHarga.setText(dataKelas?.harga.toString())
             binding.etNamaKelas.setText(dataKelas?.name.toString())
             binding.etKeteranganKelas.setText(dataKelas?.keterangan.toString())
-            binding.btnAddPengajar.text="Edit"
+            binding.btnAddPengajar.text="Simpan"
         }
 
 
         binding.btnAddPengajar.setOnClickListener {
-            if(binding.etNamaKelas.text.isNullOrEmpty()||binding.etHarga.text.isNullOrEmpty()){
+            if(binding.etNamaKelas.text.isNullOrEmpty()||binding.etHarga.text.isNullOrEmpty()||binding.etKeteranganKelas.text.isNullOrEmpty()){
                 Toast.makeText(this.context,"Harap isi semua kolom inputan", Toast.LENGTH_SHORT).show()
             }
             else{

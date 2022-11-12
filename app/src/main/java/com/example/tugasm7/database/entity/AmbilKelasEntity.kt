@@ -16,12 +16,10 @@ nama column
 
 @Entity(tableName = "ambilkelas")
 data class AmbilKelasEntity(
-    @PrimaryKey
-    val id:String,
+    @PrimaryKey(autoGenerate = true)
+    val id:Int,
     val idKelas:Int,
     val usernameMurid: String,
-    val statusSelesai: Boolean,
-    val name:  String,
-    val role: String
+    var statusSelesai: Boolean,
 ){
 }
