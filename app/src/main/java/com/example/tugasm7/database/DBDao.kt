@@ -72,14 +72,10 @@ interface DBDao {
     @Query("DELETE FROM kelas where id = :id")
     suspend fun deleteKelas(id: String)
 
-    @Query("SELECT k.* FROM ambilkelas a,kelas k where a.usernameMurid = :usernamemurid and a.idKelas=k.id")
-    suspend fun getKelasMurid(usernamemurid:String):List<KelasEntity>
 
     @Query("SELECT * FROM kelas")
     suspend fun getKelas():List<KelasEntity>
 
-    @Query("SELECT * FROM kelas where usernamepengajar=:username")
-    suspend fun getKelasPengajar(username:String):List<KelasEntity>
 
 
 
